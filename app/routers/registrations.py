@@ -14,7 +14,7 @@ def get_registrations(session: SessionDep)->list[Registration]: #endpoint/path f
 
 @router.delete("/") #Decoratore che specifica il metodo HTTP e il percorso. Definisce l'endpoint DELETE /registrations
 def delete_registration_by_username_and_event_id( #endpoint/path function
-        id: Annotated[int, Query(description="The id of the event to delete")], #Il tipo atteso per l'id è un intero. Path aggiunge una descrizione visibile nella documentazione Swagger.
+        event_id: Annotated[int, Query(description="The id of the event to delete")], #Il tipo atteso per l'id è un intero. Path aggiunge una descrizione visibile nella documentazione Swagger.
         username: Annotated[str, Query(description="The username of the person to delete")],
         session: SessionDep
 ):
@@ -22,11 +22,11 @@ def delete_registration_by_username_and_event_id( #endpoint/path function
     registration = session.exec( #eseguiamo una query che seleziona tutte le registrazioni con lo username dato e l'ID evento dato
         select(Registration).where(
             Registration.username == username,
-            Registration.event_id == id
+            Registration.event_id == event_id
         )
     ).first()
     if not registration: #se la registrazione non esiste
         raise HTTPException(status_code=404, detail="Registration not found") #error 404-> la risorsa richiesta (la registrazione) non esiste
     session.delete(registration) #Rimuovo le registrazioni
     session.commit() #funzione che rende effettive le modifiche al DB (altrimenti le perderemmo al termine della sessione)
-    return f"Registration of {username} for event {id} deleted successfully"
+    return f"Registration of {username} for event {event_id} deleted successfully"
