@@ -1,0 +1,6 @@
+fastapi[standard]
+requests
+sqlmodel
+Faker
+pydantic>=2.0
+uvicorn
