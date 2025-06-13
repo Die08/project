@@ -12,6 +12,3 @@ class User(UserBase, table=True): #Definizione della classe User
 
 class UserCreate(UserBase):
     pass
-
-class UserPublic(UserBase):
-    pass

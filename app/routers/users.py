@@ -3,13 +3,13 @@ from sqlmodel import select, delete #select e delete sono funzioni di costruzion
 from typing import Annotated #per annotare i tipi
 from app.data.db import SessionDep #SessionDep è un alias di tipo per l’iniezione di dipendenza di FastAPI. Per aprire e chiudere automaticamente una Session (connetterci al DB)
 from app.models.registration import Registration #import necessario per usare la classe Registration definita nel package models nel file python registration.py
-from app.models.user import User, UserPublic, UserCreate #import necessario per usare la classe User definita nel package models nel file python user.py
+from app.models.user import User, UserCreate #import necessario per usare la classe User definita nel package models nel file python user.py
 
 router = APIRouter(prefix="/users", tags=["users"]) #Inizializzazione del router.Tutti gli endpoint definiti saranno sotto il path /users. Il tag "users" sarà utilizzato nella documentazione Swagger
 
 
 @router.get("/") #Decoratore che specifica il metodo HTTP e il percorso. Definisce l'endpoint GET /users
-def get_all_users(session: SessionDep)->list[UserPublic]:  #endpoint/path function, restituisce una lista di oggetti User
+def get_all_users(session: SessionDep)->list[User]:  #endpoint/path function, restituisce una lista di oggetti User
     """Returns the list of all users""" #questa descrizione appare nella documentazione /docs
     users = session.exec(select(User)).all() #eseguiamo una query che seleziona tutti gli utenti
     return users
@@ -18,7 +18,7 @@ def get_all_users(session: SessionDep)->list[UserPublic]:  #endpoint/path functi
 def get_user_by_username( #endpoint/path function, restituisce oggetto User
         session: SessionDep,
         username: Annotated[str, Path(description="The username of the user to get")]
-)->UserPublic:
+)->User:
     """Returns the user with the given username""" #questa descrizione appare nella documentazione /docs
     user = session.get(User, username) #Cerca l'utente con lo username dato
     if not user: #se l'utente non esiste viene sollevata un'eccezione
