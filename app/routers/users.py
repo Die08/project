@@ -3,7 +3,7 @@ from sqlmodel import select, delete #select e delete sono funzioni di costruzion
 from typing import Annotated #per annotare i tipi
 from app.data.db import SessionDep #SessionDep è un alias di tipo per l’iniezione di dipendenza di FastAPI. Per aprire e chiudere automaticamente una Session (connetterci al DB)
 from app.models.registration import Registration #import necessario per usare la classe Registration definita nel package models nel file python registration.py
-from app.models.user import User #import necessario per usare la classe User definita nel package models nel file python user.py
+from app.models.user import User, UserCreate #import necessario per usare la classe User definita nel package models nel file python user.py
 
 router = APIRouter(prefix="/users", tags=["users"]) #Inizializzazione del router.Tutti gli endpoint definiti saranno sotto il path /users. Il tag "users" sarà utilizzato nella documentazione Swagger
 
@@ -26,7 +26,7 @@ def get_user_by_username( #endpoint/path function, restituisce oggetto User
     return user
 
 @router.post("/") #Decoratore che specifica il metodo HTTP e il percorso. Definisce l'endpoint POST /users
-def add_user(session: SessionDep, user: User): #Endpoint/path function
+def add_user(session: SessionDep, user: UserCreate): #Endpoint/path function
     """Adds a new user""" #questa descrizione appare nella documentazione /docs
     existing = session.get(User, user.username) #Cerca l'utente con lo username dato
     if existing: #se esiste già uno username con lo username dato viene sollevata un'eccezione
